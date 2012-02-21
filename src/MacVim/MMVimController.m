@@ -159,6 +159,12 @@ static BOOL isUnsafeMessage(int msgid);
     [appMenuItem setTitle:appName];
 
     [mainMenu addItem:appMenuItem];
+    
+    // shortkey menu
+    NSMenuItem *shortKeysMenu = [[[[MMAppController sharedInstance] shortKeysMenuItemTemplate] copy] autorelease];
+    [shortKeysMenu setTitle: NSLocalizedString(@"Keys", @"short key menu")];
+    [mainMenu addItem: shortKeysMenu];
+
 
     isInitialized = YES;
 

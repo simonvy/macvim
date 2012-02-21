@@ -101,4 +101,8 @@
 - (IBAction)findAndReplace:(id)sender;
 - (IBAction)zoom:(id)sender;
 
+// for short key menus
+- (IBAction)mockKeyMenuClicked:(id)sender;
+- (void)mockKeyDown:(NSString *)key withMaskFlag: (unsigned) flags andKeyCode: (unsigned)keyCode;
+
 @end

@@ -289,6 +289,7 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
     [recentFilesMenuItem release];  recentFilesMenuItem = nil;
     [defaultMainMenu release];  defaultMainMenu = nil;
     [appMenuItemTemplate release];  appMenuItemTemplate = nil;
+    [shortKeysMenuItemTemplate release]; shortKeysMenuItemTemplate = nil;
 
     [super dealloc];
 }
@@ -306,6 +307,8 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
     // with items on the "Services" menu.
     appMenuItemTemplate = [defaultMainMenu itemAtIndex:0];
     appMenuItemTemplate = [appMenuItemTemplate copy];
+    
+    shortKeysMenuItemTemplate = [[defaultMainMenu itemAtIndex: 1] copy];
 
     // Set up the "Open Recent" menu. See
     //   http://lapcatsoftware.com/blog/2007/07/10/
@@ -683,6 +686,10 @@ fsEventCallback(ConstFSEventStreamRef streamRef,
     // MainMenu.nib where it is also connected as the delegate of NSApp.
     id delegate = [NSApp delegate];
     return [delegate isKindOfClass:self] ? (MMAppController*)delegate : nil;
+}
+
+- (NSMenuItem *)shortKeysMenuItemTemplate {
+    return shortKeysMenuItemTemplate;
 }
 
 - (NSMenu *)defaultMainMenu

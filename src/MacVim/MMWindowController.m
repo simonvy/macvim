@@ -821,6 +821,41 @@
     return NO;
 }
 
+- (void)mockKeyDown:(NSString *)key withMaskFlag:(unsigned)flags andKeyCode:(unsigned int)keyCode {
+    const char *chars = [key UTF8String];
+    unsigned length = [key lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+    
+    // The low 16 bits are not used for modifier flags by NSEvent.  Use
+    // these bits for custom flags.
+    flags &= NSDeviceIndependentModifierFlagsMask;
+    
+    NSMutableData *data = [NSMutableData data];
+    [data appendBytes:&flags length:sizeof(unsigned)];
+    [data appendBytes:&keyCode length:sizeof(unsigned)];
+    [data appendBytes:&length length:sizeof(unsigned)];
+    if (length > 0)
+        [data appendBytes:chars length:length];
+    
+    [[self vimController] sendMessage:KeyDownMsgID data:data];
+}
+
+- (IBAction)mockKeyMenuClicked:(id)sender {
+    NSMenuItem *menuItem = (NSMenuItem *)sender;
+    switch(menuItem.tag) {
+        case 0:
+            [self mockKeyDown:@"\\rt" withMaskFlag: 0 andKeyCode: 42];
+            break;
+        case 1:
+            break;
+        case 2:
+            //            [self mockKeyDown:@"t" withMaskFlag: NSCommandKeyMask andKeyCode: 55];
+            break;
+        case 3:
+            [self mockKeyDown:@"\\n" withMaskFlag: 0 andKeyCode: 42];
+            break;
+    }
+}
+
 
 - (IBAction)addNewTab:(id)sender
 {
