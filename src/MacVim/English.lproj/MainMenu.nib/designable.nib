@@ -195,7 +195,7 @@
 							<array class="NSMutableArray" key="NSMenuItems">
 								<object class="NSMenuItem" id="782452817">
 									<reference key="NSMenu" ref="291233216"/>
-									<string key="NSTitle">\rt        - taglist</string>
+									<string key="NSTitle">taglist		\rt</string>
 									<string key="NSKeyEquiv">1</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -204,7 +204,7 @@
 								</object>
 								<object class="NSMenuItem" id="737728568">
 									<reference key="NSMenu" ref="291233216"/>
-									<string key="NSTitle">Ctrl+]   - ctags (T)</string>
+									<string key="NSTitle">jump to tag	Control-]</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="914322580"/>
@@ -213,7 +213,7 @@
 								</object>
 								<object class="NSMenuItem" id="223093141">
 									<reference key="NSMenu" ref="291233216"/>
-									<string key="NSTitle">Cmd+T - find files</string>
+									<string key="NSTitle">find file	Command-T</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="914322580"/>
@@ -222,7 +222,7 @@
 								</object>
 								<object class="NSMenuItem" id="391781951">
 									<reference key="NSMenu" ref="291233216"/>
-									<string key="NSTitle">\n         - project</string>
+									<string key="NSTitle">file list	\n</string>
 									<string key="NSKeyEquiv">2</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
