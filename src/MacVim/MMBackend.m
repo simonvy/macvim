@@ -1217,6 +1217,20 @@ extern GuiFont gui_mch_retain_font(GuiFont font);
         unsigned mods = *((unsigned*)bytes);  bytes += sizeof(unsigned);
         unsigned code = *((unsigned*)bytes);  bytes += sizeof(unsigned);
         unsigned len  = *((unsigned*)bytes);  bytes += sizeof(unsigned);
+        // record the key, the log file should exist otherwise this logs nothing.
+        NSString *theKey = [[NSString alloc] initWithBytes:bytes
+                                                 length:len
+                                               encoding:NSUTF8StringEncoding];
+        NSString *log = [NSString stringWithFormat: @"doKeyDown: %@, code: %hu, flags: %hu\n", theKey, code, mods];
+	NSString *logPath = @"~/.macvim.log";
+	logPath = [logPath stringByExpandingTildeInPath];
+	NSFileHandle *logFileHandle = [NSFileHandle fileHandleForWritingAtPath: logPath];
+	if (logFileHandle) {
+	    [logFileHandle seekToEndOfFile];
+	    [logFileHandle writeData: [log dataUsingEncoding: NSUTF8StringEncoding]];
+	    [logFileHandle closeFile];
+	}
+        //
 
         if (ctrl_c_interrupts && 1 == len) {
             // NOTE: the flag ctrl_c_interrupts is 0 e.g. when the user has

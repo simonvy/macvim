@@ -843,7 +843,7 @@
     NSMenuItem *menuItem = (NSMenuItem *)sender;
     switch(menuItem.tag) {
         case 0:
-            [self mockKeyDown:@"\\rt" withMaskFlag: 0 andKeyCode: 42];
+            [self mockKeyDown:@"\\rt" withMaskFlag: 0 andKeyCode: 0];
             break;
         case 1:
             break;
@@ -851,7 +851,7 @@
             //            [self mockKeyDown:@"t" withMaskFlag: NSCommandKeyMask andKeyCode: 55];
             break;
         case 3:
-            [self mockKeyDown:@"\\n" withMaskFlag: 0 andKeyCode: 42];
+            [self mockKeyDown:@"\\n" withMaskFlag: 0 andKeyCode: 0];
             break;
     }
 }

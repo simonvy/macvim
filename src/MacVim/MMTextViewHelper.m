@@ -933,18 +933,6 @@ KeyboardInputSourcesEqual(TISInputSourceRef a, TISInputSourceRef b)
         [data appendBytes:chars length:length];
 
     [[self vimController] sendMessage:KeyDownMsgID data:data];
-	
-	// record the key, the log file should exist otherwise this would record nothing.
-	NSString *log = [NSString stringWithFormat: @"doKeyDown: %@, code: %hu, flags: %hu\n", key, keyCode, flags];
-	NSString *logPath = @"~/.macvim.log";
-	logPath = [logPath stringByExpandingTildeInPath];
-	NSFileHandle *logFileHandle = [NSFileHandle fileHandleForWritingAtPath: logPath];
-	if (logFileHandle) {
-		[logFileHandle seekToEndOfFile];
-		[logFileHandle writeData: [log dataUsingEncoding: NSUTF8StringEncoding]];
-		[logFileHandle closeFile];
-	}
-	//
 }
 
 - (void)doInsertText:(NSString *)text
