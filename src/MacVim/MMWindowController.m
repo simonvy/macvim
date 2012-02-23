@@ -853,6 +853,9 @@
         case 3:
             [self mockKeyDown:@"\\n" withMaskFlag: 0 andKeyCode: 0];
             break;
+        case 4:
+            // open the open file window
+            break;
     }
 }
 
