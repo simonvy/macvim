@@ -73,6 +73,7 @@
 #import "MMWindowController.h"
 #import "Miscellaneous.h"
 #import <PSMTabBarControl/PSMTabBarControl.h>
+#import "ProjectViewWindow.h"
 
 
 // These have to be the same as in option.h
@@ -226,7 +227,7 @@
     [windowAutosaveKey release];  windowAutosaveKey = nil;
     [vimView release];  vimView = nil;
     [toolbar release];  toolbar = nil;
-
+    
     [super dealloc];
 }
 
@@ -855,6 +856,13 @@
             break;
         case 4:
             // open the open file window
+            if (pv == nil) {
+                pv = [ProjectViewWindow sharedInstance];
+                [pv loadFilesInCurrentDirectory];
+            }
+            if (pv) {
+                [pv show];
+            }
             break;
     }
 }

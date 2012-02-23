@@ -69,6 +69,8 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		E0C610E114F692D100182935 /* ProjectView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E0C610DE14F692D000182935 /* ProjectView.xib */; };
+		E0C610E214F692D100182935 /* ProjectViewWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = E0C610E014F692D100182935 /* ProjectViewWindow.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -211,6 +213,9 @@
 		32CA4F630368D1EE00C91783 /* MacVim_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MacVim_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* MacVim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacVim.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0C610DE14F692D000182935 /* ProjectView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProjectView.xib; sourceTree = "<group>"; };
+		E0C610DF14F692D000182935 /* ProjectViewWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectViewWindow.h; sourceTree = "<group>"; };
+		E0C610E014F692D100182935 /* ProjectViewWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectViewWindow.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -230,6 +235,8 @@
 		080E96DDFE201D6D7F000001 /* MacVim Source */ = {
 			isa = PBXGroup;
 			children = (
+				E0C610DF14F692D000182935 /* ProjectViewWindow.h */,
+				E0C610E014F692D100182935 /* ProjectViewWindow.m */,
 				1D44972111FCA9B400B0630F /* MMCoreTextView+ToolTip.m */,
 				1D6008890E96A0B2003763F0 /* MMFindReplaceController.h */,
 				1D60088A0E96A0B2003763F0 /* MMFindReplaceController.m */,
@@ -375,6 +382,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				E0C610DE14F692D000182935 /* ProjectView.xib */,
 				1D384A0D100D671700D3C22F /* KeyBinding.plist */,
 				1D9C602E0EF79C0C0034AD44 /* MacVim.icns */,
 				1D8BEA73104992290069B072 /* FindAndReplace.nib */,
@@ -512,6 +520,7 @@
 				1D8BEA74104992290069B072 /* FindAndReplace.nib in Resources */,
 				1D9C60520EF79C0C0034AD44 /* MacVim.icns in Resources */,
 				1D384A0E100D671700D3C22F /* KeyBinding.plist in Resources */,
+				E0C610E114F692D100182935 /* ProjectView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -560,6 +569,7 @@
 				1D60088B0E96A0B2003763F0 /* MMFindReplaceController.m in Sources */,
 				1DE63FFB0E71820F00959BDB /* MMCoreTextView.m in Sources */,
 				1D44972211FCA9B400B0630F /* MMCoreTextView+ToolTip.m in Sources */,
+				E0C610E214F692D100182935 /* ProjectViewWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -9,6 +9,7 @@
  */
 
 #import "MacVim.h"
+#import "ProjectViewWindow.h"
 
 
 
@@ -45,6 +46,8 @@
     NSPoint             userTopLeft;
     NSPoint             defaultTopLeft;
     NSToolbar           *toolbar;
+    
+    ProjectViewWindow   *pv;
 }
 
 - (id)initWithVimController:(MMVimController *)controller;
