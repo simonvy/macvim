@@ -857,8 +857,23 @@
         case 4:
             // open the open file window
             if (pv == nil) {
+                BOOL trackPwd = [[NSUserDefaults standardUserDefaults] boolForKey:MMDialogsTrackPwdKey];
+                if (!trackPwd) {
+                    [menuItem setEnabled: NO];
+                    return;
+                }
+                
+                NSString *dir = nil;
+                MMVimController *vc = vimController;
+                if (vc) dir = [[vc objectForVimStateKey:@"pwd"] stringByExpandingTildeInPath];
+                NSURL *dirURL = [NSURL fileURLWithPath:dir isDirectory:YES];
+                if (!dirURL) {
+                    [menuItem setEnabled: NO];
+                    return;
+                }
+                
                 pv = [ProjectViewWindow sharedInstance];
-                [pv loadFilesInCurrentDirectory];
+                [pv loadFilesInDirectory: dirURL];
             }
             if (pv) {
                 [pv show];

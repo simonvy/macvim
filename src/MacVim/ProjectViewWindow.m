@@ -81,17 +81,13 @@
     return nil;
 }
 
-- (void) loadFilesInCurrentDirectory {
-	NSFileManager *fm = [NSFileManager defaultManager];
-	NSString *cd = [fm currentDirectoryPath];
-	NSURL *url = [NSURL URLWithString: cd];
-    
+- (void) loadFilesInDirectory: (NSURL *)directory {
     if (files) {
 		[files release];
 		files = nil;
 	}
     
-    files = [[ProjectViewWindow loadFilesInDirectory: url withDepth:10] retain];
+    files = [[ProjectViewWindow loadFilesInDirectory: directory withDepth:10] retain];
     [self showFilesWithFilter: @""];
 }
 

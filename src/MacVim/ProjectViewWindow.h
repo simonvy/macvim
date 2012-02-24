@@ -18,7 +18,7 @@
 @property (assign) IBOutlet NSSearchField *filterTextField;
 
 + (id) sharedInstance;
-- (void) loadFilesInCurrentDirectory;
+- (void) loadFilesInDirectory: (NSURL *)directory;
 - (IBAction)filterChanged: (id)sender;
 - (IBAction)fileSelected:(id)sender;
 - (void) show;
