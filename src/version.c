@@ -1915,8 +1915,11 @@ static void do_intro_line __ARGS((int row, char_u *mesg, int add_version, int at
  * Only used when starting Vim on an empty file, without a file name.
  * Or with the ":intro" command (for Sven :-).
  */
+
+void intro_message(colon) int colon; { }
+
     void
-intro_message(colon)
+intro_message_origin(colon)
     int		colon;		/* TRUE for ":intro" */
 {
     int		i;
