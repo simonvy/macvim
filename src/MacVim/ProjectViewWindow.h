@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface ProjectViewWindow : NSWindowController <NSTableViewDelegate, NSTextDelegate> {
+@interface ProjectViewWindow : NSWindowController <NSTableViewDataSource, NSTextDelegate> {
     NSArray *files;
     NSArray *filteredFiles;
 }
