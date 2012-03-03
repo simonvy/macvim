@@ -46,12 +46,14 @@ enum {
     int32_t identifier;
     int type;
     NSRange range;
+    BOOL isPresent;
 }
 - (id)initWithIdentifier:(int32_t)ident type:(int)type;
 - (int32_t)scrollerId;
 - (int)type;
 - (NSRange)range;
 - (void)setRange:(NSRange)newRange;
+@property (assign) BOOL isPresent;
 @end
 
 
@@ -66,6 +68,7 @@ enum {
 - (NSRect)textViewRectForVimViewSize:(NSSize)contentSize;
 - (NSTabView *)tabView;
 - (void)frameSizeMayHaveChanged;
+- (void) hideScroller: (NSScroller *) scroller;
 @end
 
 
@@ -434,9 +437,9 @@ enum {
 {
     MMScroller *scroller = [self scrollbarForIdentifier:ident index:NULL];
     if (!scroller) return NO;
-
-    BOOL wasVisible = ![scroller isHidden];
-    [scroller setHidden:!visible];
+    
+    BOOL wasVisible = scroller.isPresent;
+    scroller.isPresent = visible;
 
     // If a scroller was hidden or shown then the vim view must resize.  This
     // is handled by the window controller (the vim view never resizes itself).
@@ -447,6 +450,13 @@ enum {
                     identifier:(int32_t)ident
 {
     MMScroller *scroller = [self scrollbarForIdentifier:ident index:NULL];
+    
+    [NSRunLoop cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideScroller:) object: scroller];
+    if (scroller.isPresent) {
+        [scroller setHidden: NO];
+        [scroller setNeedsDisplay: YES];
+    }
+    
 #if (MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_5)
     [scroller setDoubleValue:val];
     [scroller setKnobProportion:prop];
@@ -454,8 +464,14 @@ enum {
     [scroller setFloatValue:val knobProportion:prop];
 #endif
     [scroller setEnabled:prop != 1.f];
+    if (scroller.isPresent)
+        [self performSelector: @selector(hideScroller:) withObject:scroller afterDelay: 0.8];
 }
 
+- (void) hideScroller: (NSScroller *) scroller {
+    [scroller setHidden: YES];
+    [scroller setNeedsDisplay: YES];
+}
 
 - (void)scroll:(id)sender
 {
@@ -674,7 +690,7 @@ enum {
     unsigned i, count = [scrollbars count];
     for (i = 0; i < count; ++i) {
         MMScroller *scroller = [scrollbars objectAtIndex:i];
-        if (![scroller isHidden]) {
+        if (scroller.isPresent) {
             NSRange range = [scroller range];
             if ([scroller type] == MMScrollerTypeLeft
                     && range.location >= rowMaxLeft) {
@@ -691,11 +707,10 @@ enum {
             }
         }
     }
-
     // Place the scrollbars.
     for (i = 0; i < count; ++i) {
         MMScroller *scroller = [scrollbars objectAtIndex:i];
-        if ([scroller isHidden])
+        if (!scroller.isPresent)
             continue;
 
         NSRect rect;
@@ -732,7 +747,7 @@ enum {
                     - rect.size.height;
             rect.size.width = [NSScroller scrollerWidth];
             if ([scroller type] == MMScrollerTypeRight)
-                rect.origin.x = NSMaxX(textViewFrame);
+                rect.origin.x = NSMaxX(textViewFrame) - [NSScroller scrollerWidth];
 
             // HACK!  Make sure the lowest vertical scrollbar covers the text
             // view all the way to the bottom.  This is done because Vim only
@@ -814,10 +829,6 @@ enum {
 
     if ([self bottomScrollbarVisible])
         size.height += [NSScroller scrollerWidth];
-    if ([self leftScrollbarVisible])
-        size.width += [NSScroller scrollerWidth];
-    if ([self rightScrollbarVisible])
-        size.width += [NSScroller scrollerWidth];
 
     return size;
 }
@@ -833,12 +844,6 @@ enum {
         rect.size.height -= [NSScroller scrollerWidth];
         rect.origin.y += [NSScroller scrollerWidth];
     }
-    if ([self leftScrollbarVisible]) {
-        rect.size.width -= [NSScroller scrollerWidth];
-        rect.origin.x += [NSScroller scrollerWidth];
-    }
-    if ([self rightScrollbarVisible])
-        rect.size.width -= [NSScroller scrollerWidth];
 
     return rect;
 }
@@ -922,6 +927,7 @@ enum {
 
     identifier = ident;
     type = theType;
+    self.isPresent = NO;
     [self setHidden:YES];
     [self setEnabled:YES];
     [self setAutoresizingMask:NSViewNotSizable];
@@ -976,5 +982,7 @@ enum {
     [super mouseDown:event];
     [connection removeRequestMode:NSEventTrackingRunLoopMode];
 }
+
+@synthesize isPresent;
 
 @end // MMScroller
