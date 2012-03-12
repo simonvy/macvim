@@ -1995,7 +1995,7 @@ win_update(wp)
 
 	/* make sure the rest of the screen is blank */
 	/* put '~'s on rows that aren't part of the file. */
-	win_draw_end(wp, '~', ' ', row, wp->w_height, HLF_AT);
+	// win_draw_end(wp, '~', ' ', row, wp->w_height, HLF_AT);
     }
 
     /* Reset the type of redrawing required, the window has been updated. */
