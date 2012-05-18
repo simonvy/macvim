@@ -11,16 +11,24 @@
 
 @interface ProjectViewWindow ()
 
+
+@property (assign) IBOutlet NSTableView *table;
+@property (assign) IBOutlet NSSearchField *filterTextField;
+
+@property (retain) NSArray *files;
+@property (retain) NSArray *filteredFiles;
+
 - (void) showFilesWithFilter: (NSString *)filter;
-+ (NSArray *) loadFilesInDirectory: (NSURL *)directory withDepth: (NSInteger) depth;
 - (void) filter: (id)sender;
 
 @end
 
 @implementation ProjectViewWindow
 
-@synthesize table;
-@synthesize filterTextField;
+@synthesize files = _files;
+@synthesize filteredFiles = _filteredFiles;
+@synthesize table = _table;
+@synthesize filterTextField = _filterTextField;
 
 +(id) sharedInstance {
     static ProjectViewWindow *singleton = nil;
@@ -34,45 +42,26 @@
 }
 
 - (void) show {
-    [filterTextField setStringValue: @""];
+    [self.filterTextField setStringValue: @""];
     [self showFilesWithFilter: @""];
-    [table deselectRow: [table selectedRow]];
+    [self.table deselectRow: [self.table selectedRow]];
     NSWindow *window = [self window];
     [window makeFirstResponder: self.filterTextField];
     [window makeKeyAndOrderFront: self];
 }
 
-- (id)initWithWindow:(NSWindow *)window {
-    self = [super initWithWindow:window];
-    if (self) {
-        files = nil;
-        filteredFiles = nil;
-    }
-    return self;
-}
-
-- (void)dealloc {
-    if (files) {
-        [files release]; files = nil;
-    }
-    if (filteredFiles) {
-        [filteredFiles release]; filteredFiles = nil;
-    }
-    [super dealloc];
-}
-
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView {
-    if (aTableView == table) {
-        if (filteredFiles) {
-            return [filteredFiles count];
+    if (aTableView == self.table) {
+        if (self.filteredFiles) {
+            return [self.filteredFiles count];
         }
     }
     return 0;
 }
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
-    if (aTableView == table) {
-        NSURL *fileURL = [filteredFiles objectAtIndex: rowIndex];
+    if (aTableView == self.table) {
+        NSURL *fileURL = [self.filteredFiles objectAtIndex: rowIndex];
         NSString *localizedName = nil;
 		[fileURL getResourceValue: &localizedName forKey: NSURLLocalizedNameKey error: nil];
         NSTextFieldCell *cell = [[[NSTextFieldCell alloc] initTextCell: localizedName] autorelease];
@@ -82,42 +71,49 @@
 }
 
 - (void) loadFilesInDirectory: (NSURL *)directory {
-    if (files) {
-		[files release];
-		files = nil;
-	}
+    NSMutableArray *files = [NSMutableArray array];
     
-    files = [[ProjectViewWindow loadFilesInDirectory: directory withDepth:10] retain];
+    NSFileManager *fileManager = [NSFileManager new];
+    NSDirectoryEnumerator *e = [fileManager enumeratorAtURL:directory includingPropertiesForKeys:[NSArray arrayWithObjects:NSURLLocalizedNameKey, NSURLIsDirectoryKey, nil]
+                                                    options:NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil];
+    
+    for (NSURL *fileURL in e) {
+        NSNumber *isDirectory = nil;
+		[fileURL getResourceValue: &isDirectory forKey: NSURLIsDirectoryKey error: nil];
+		if ([isDirectory boolValue] == NO) {
+            [files addObject: fileURL];
+		}
+    }
+    
+    self.files = files;
+    
+    [fileManager release];
     [self showFilesWithFilter: @""];
 }
 
 - (void) showFilesWithFilter: (NSString *)filter {
-	if (files == nil) {
-		return;
-	}
-    if (filteredFiles) {
-        [filteredFiles release];
-        filteredFiles = nil;
+    NSMutableArray *fc = [NSMutableArray array];
+    
+    if (self.files) {
+        for (NSURL *fileURL in self.files) {
+            NSString *localizedName = nil;
+            [fileURL getResourceValue: &localizedName forKey: NSURLLocalizedNameKey error: nil];
+            
+            bool searched = YES;
+            if ([filter length]) {
+                NSRange search = [localizedName rangeOfString: filter options: NSCaseInsensitiveSearch];
+                searched = !(search.location == NSNotFound);
+            }
+            
+            if (searched) {
+                [fc addObject: fileURL];
+            }
+        }
     }
     
-    NSMutableArray *fc = [[NSMutableArray alloc] initWithCapacity: [files count]];
-    for (NSURL *fileURL in files) {
-		NSString *localizedName = nil;
-		[fileURL getResourceValue: &localizedName forKey: NSURLLocalizedNameKey error: nil];
-		
-		bool searched = YES;
-		if ([filter length]) {
-			NSRange search = [localizedName rangeOfString: filter options: NSCaseInsensitiveSearch];
-			searched = !(search.location == NSNotFound);
-		}
-        
-		if (searched) {
-            [fc addObject: fileURL];
-		}
-    }
-    filteredFiles = [fc retain];
+    self.filteredFiles = fc;
     
-    [table reloadData];
+    [self.table reloadData];
 }
 
 - (IBAction)filterChanged:(id)sender {
@@ -129,7 +125,7 @@
     NSTableView *tv = (NSTableView *)sender;
     NSInteger index = [tv selectedRow];
     if (index >= 0) {
-        NSURL *file = [filteredFiles objectAtIndex: index];
+        NSURL *file = [self.filteredFiles objectAtIndex: index];
         [[MMAppController sharedInstance] openFiles: [NSArray arrayWithObject: [file path]]
                                       withArguments: [NSDictionary dictionary]];
     }
@@ -138,33 +134,6 @@
 - (void) filter: (id) sender {
     NSSearchField *filterField = (NSSearchField *)sender;
     [self showFilesWithFilter: [filterField stringValue]];
-}
-
-+ (NSArray *) loadFilesInDirectory: (NSURL *)directory withDepth: (NSInteger) depth {
-    
-    NSError *err = nil;
-	NSArray *properties = [NSArray arrayWithObjects: NSURLLocalizedNameKey, NSURLIsDirectoryKey, NSURLContentModificationDateKey, nil];
-	NSArray *fileList = [[NSFileManager defaultManager] contentsOfDirectoryAtURL: directory includingPropertiesForKeys: properties options: NSDirectoryEnumerationSkipsHiddenFiles error: &err];
-	if (err) {
-		// something is wrong have to handle it
-		return [NSArray array];
-	}
-    
-    NSMutableArray *fc = [[[NSMutableArray alloc] initWithCapacity: [fileList count]] autorelease];
-    for (NSURL *fileURL in fileList) {
-		NSNumber *isDirectory = nil;
-		[fileURL getResourceValue: &isDirectory forKey: NSURLIsDirectoryKey error: nil];
-		if ([isDirectory boolValue]) {
-            if (depth >= 0) {
-                NSArray *items = [self loadFilesInDirectory: fileURL withDepth: (depth - 1)];
-                [fc addObjectsFromArray: items]; 
-            }
-		} else {
-            [fc addObject: fileURL];
-        }
-    }
-    
-    return fc;
 }
 
 @end
