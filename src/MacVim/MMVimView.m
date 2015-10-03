@@ -449,6 +449,9 @@ enum {
 - (void)setScrollbarThumbValue:(float)val proportion:(float)prop
                     identifier:(int32_t)ident
 {
+    // on el capitan, this function is somehow very slow. [setNeedsDisplay]
+    return;
+    
     MMScroller *scroller = [self scrollbarForIdentifier:ident index:NULL];
     
     [NSRunLoop cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideScroller:) object: scroller];
